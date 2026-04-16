@@ -7,7 +7,7 @@ use App\Models\Ticket;
 
 class TicketController extends Controller
 {
-    //Show Ticket
+    // Show Ticket
     public function show($id)
     {
         $ticket = Ticket::findOrFail($id);
@@ -15,4 +15,15 @@ class TicketController extends Controller
         return view('tickets.show', compact('ticket'));
     }
 
+    // Search Ticket
+    public function search(Request $request)
+    {
+        $ticket = Ticket::where('ref', $request->reference)->first();
+
+        if ($ticket) {
+            return redirect()->route('tickets.show', $ticket->id);
+        }
+
+        return redirect()->back()->with('error', 'Ticket not found');
+    }
 }
