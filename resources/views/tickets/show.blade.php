@@ -1,13 +1,26 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket Details</title>
+</head>
+<body>
 
-@section('content')
+<h1>Ticket Details</h1>
 
-<h2>Ticket Details</h2>
+@if(session('success'))
+    <p style="color:green;">{{ session('success') }}</p>
+@endif
 
-<p><strong>Reference:</strong> {{ $ticket->ref }}</p>
 <p><strong>Name:</strong> {{ $ticket->customer_name }}</p>
 <p><strong>Email:</strong> {{ $ticket->email }}</p>
 <p><strong>Phone:</strong> {{ $ticket->phone }}</p>
 <p><strong>Description:</strong> {{ $ticket->description }}</p>
+<p><strong>Reference:</strong> {{ $ticket->ref }}</p>
+<p><strong>Status:</strong> 
+    {{ $ticket->status == 0 ? 'Open' : 'Closed' }}
+</p>
 
-@endsection
+<a href="/">Back</a>
+
+</body>
+</html>
