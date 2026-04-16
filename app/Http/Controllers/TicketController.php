@@ -7,17 +7,25 @@ use App\Models\Ticket;
 
 class TicketController extends Controller
 {
-    // Store Ticket
+    // Store Ticket (Updated)
     public function store(Request $request)
     {
-        $ticket = Ticket::create([
-            'customer_name' => $request->customer_name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'description' => $request->description,
-            'ref' => 'TCK-' . strtoupper(uniqid()),
-            'status' => 0
+        $request->validate([
+            'customer_name' => 'required|max:200',
+            'email' => 'required|email',
+            'description' => 'required'
         ]);
+
+        $ticket = new Ticket();
+
+        $ticket->customer_name = $request->customer_name;
+        $ticket->email = $request->email;
+        $ticket->phone = $request->phone;
+        $ticket->description = $request->description;
+        $ticket->ref = 'TCK-' . strtoupper(substr(sha1(time()), 0, 10)); // improved ref
+        $ticket->status = 0;
+
+        $ticket->save();
 
         return redirect()
             ->route('tickets.show', $ticket->id)
