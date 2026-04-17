@@ -2,10 +2,9 @@
 
 namespace App\Mail;
 
+use App\Models\Ticket;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -14,12 +13,14 @@ class TicketCreated extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $ticket;
+
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(Ticket $ticket)
     {
-        //
+        $this->ticket = $ticket;
     }
 
     /**
@@ -28,7 +29,7 @@ class TicketCreated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Ticket Created',
+            subject: 'New Support Ticket: ' . $this->ticket->ref,
         );
     }
 
@@ -38,17 +39,10 @@ class TicketCreated extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'mails.ticket-created',
+            with: [
+                'ticket' => $this->ticket
+            ]
         );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
     }
 }
