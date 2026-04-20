@@ -1,40 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Ticket System</title>
+    <title>Support System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body style="background-color: #f5f5f5;">
 
-<h1>Create Ticket</h1>
+<div class="container-md" style="max-width: 700px; margin-top: 40px;">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
 
-@if(session('success'))
-    <p style="color:green;">{{ session('success') }}</p>
-@endif
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
 
-@if(session('error'))
-    <p style="color:red;">{{ session('error') }}</p>
-@endif
+            @yield('content')
+        </div>
+    </div>
+</div>
 
-<!-- Create Ticket Form -->
-<form action="{{ route('tickets.store') }}" method="POST">
-    @csrf
-
-    <input type="text" name="customer_name" placeholder="Name" required><br><br>
-    <input type="email" name="email" placeholder="Email" required><br><br>
-    <input type="text" name="phone" placeholder="Phone"><br><br>
-    <textarea name="description" placeholder="Description" required></textarea><br><br>
-
-    <button type="submit">Create Ticket</button>
-</form>
-
-<hr>
-
-<h2>Search Ticket</h2>
-
-<form action="{{ route('tickets.search') }}" method="GET">
-    <input type="text" name="reference" placeholder="Enter Reference">
-    <button type="submit">Search</button>
-</form>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
