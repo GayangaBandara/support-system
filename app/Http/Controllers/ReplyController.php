@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reply;
+use Mail;
+use App\Mail\TicketReply;
 
 class ReplyController extends Controller
 {
@@ -13,12 +15,13 @@ class ReplyController extends Controller
             'message' => 'required'
         ]);
 
-        Reply::create([
+        $reply = Reply::create([
             'ticket_id' => $ticket, // get from URL
             'user_id' => 1, // temporary (replace with auth later)
             'message' => $request->message
         ]);
 
+        Mail::to($reply->ticket->email)->send(new TicketReply($reply));
         return back()->with('success', 'Reply added');
     }
 }
