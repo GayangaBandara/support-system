@@ -14,7 +14,7 @@ return new class extends Migration
         $table->string('email');
         $table->string('phone')->nullable();
         $table->text('description');
-        $table->string('ref')->unique();
+        $table->string('ref')->unique(); //use reference instead of id for better security
         $table->tinyInteger('status');
         $table->timestamps();
     });
