@@ -24,7 +24,7 @@
 
 <h4>Add Reply</h4>
 
-<form action="{{ route('replies.store', $ticket->id) }}" method="POST">
+<form action="{{ route('replies.store', $ticket->id) }}" method="post">
     @csrf
 
     <textarea name="message" placeholder="Write your reply..." required></textarea><br><br>

@@ -7,14 +7,14 @@ use App\Models\Reply;
 
 class ReplyController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, $ticket)
     {
         $request->validate([
             'message' => 'required'
         ]);
 
         Reply::create([
-            'ticket_id' => $request->ticket_id,
+            'ticket_id' => $ticket, // get from URL
             'user_id' => 1, // temporary (replace with auth later)
             'message' => $request->message
         ]);
