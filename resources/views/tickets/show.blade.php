@@ -1,52 +1,82 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ticket Details</title>
-</head>
-<body>
+@extends('layout.app')
 
-<h1>Ticket Details</h1>
+@section('content')
 
-@if(session('success'))
-    <p style="color:green;">{{ session('success') }}</p>
-@endif
+<h2 class="text-center mb-4">Support Ticket</h2>
 
-<p><strong>Name:</strong> {{ $ticket->customer_name }}</p>
-<p><strong>Email:</strong> {{ $ticket->email }}</p>
-<p><strong>Phone:</strong> {{ $ticket->phone }}</p>
-<p><strong>Description:</strong> {{ $ticket->description }}</p>
-<p><strong>Reference:</strong> {{ $ticket->ref }}</p>
-<p><strong>Status:</strong> 
-    {{ $ticket->status == 0 ? 'Open' : 'Closed' }}
-</p>
-
-<hr>
-
-<h4>Add Reply</h4>
-
-<form action="{{ route('replies.store', $ticket->id) }}" method="post">
-    @csrf
-
-    <textarea name="message" placeholder="Write your reply..." required></textarea><br><br>
-
-    <button type="submit">Send Reply</button>
-</form>
-
-<hr>
-
-<h4>Replies</h4>
-
-@forelse($ticket->replies as $reply)
-    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-        <strong>{{ $reply->user->name ?? 'Agent' }}</strong>
-        <p>{{ $reply->message }}</p>
+<div class="card mb-4">
+    <div class="card-body">
+        <table class="table table-sm">
+            <tr>
+                <th>Name:</th>
+                <td>{{ $ticket->customer_name }}</td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td>{{ $ticket->email }}</td>
+            </tr>
+            <tr>
+                <th>Phone:</th>
+                <td>{{ $ticket->phone ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th>Reference:</th>
+                <td>{{ $ticket->ref }}</td>
+            </tr>
+            <tr>
+                <th>Status:</th>
+                <td>
+                    @if($ticket->status == 0)
+                        <span class="badge bg-info">Open</span>
+                    @else
+                        <span class="badge bg-success">Closed</span>
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <th>Description:</th>
+                <td>{{ $ticket->description }}</td>
+            </tr>
+        </table>
     </div>
-@empty
-    <p>No replies yet.</p>
-@endforelse
+</div>
 
-<br>
-<a href="/">Back</a>
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Replies</h5>
+    </div>
+    <div class="card-body">
+        @forelse($ticket->replies as $reply)
+            <div class="border-bottom pb-3 mb-3">
+                <strong class="d-block">{{ $reply->user->name ?? 'Agent' }}</strong>
+                <small class="text-muted d-block">{{ $reply->created_at->format('M d, Y H:i') }}</small>
+                <p class="mt-2 mb-0">{{ $reply->message }}</p>
+            </div>
+        @empty
+            <p class="text-muted">No replies yet.</p>
+        @endforelse
+    </div>
+</div>
 
-</body>
-</html>
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Add Reply</h5>
+    </div>
+    <div class="card-body">
+        <form action="{{ route('replies.store', $ticket->id) }}" method="post">
+            @csrf
+            <div class="mb-3">
+                <textarea name="message" class="form-control" rows="4" placeholder="Write your reply..." required></textarea>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-success">Send Reply</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="/" class="btn btn-outline-secondary">Back</a>
+</div>
+
+@endsection
