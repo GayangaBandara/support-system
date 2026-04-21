@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ticket;
+use Mail;
+use App\Mail\TicketCreated;
 
 class TicketController extends Controller
 {
@@ -16,6 +18,7 @@ class TicketController extends Controller
             'description' => 'required'
         ]);
 
+        Mail::to($ticket->email)->queue(new TicketCreated($ticket));
         $ticket = new Ticket();
 
         $ticket->customer_name = $request->customer_name;
@@ -43,7 +46,7 @@ class TicketController extends Controller
     // Search Ticket
     public function search(Request $request)
     {
-        $ticket = Ticket::where('ref', $request->reference)->first();
+        $ticket = Ticket::where('ref', $request->ref)->first();
 
         if ($ticket) {
             return redirect()->route('tickets.show', $ticket->id);
