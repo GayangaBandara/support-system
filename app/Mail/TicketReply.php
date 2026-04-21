@@ -4,12 +4,13 @@ namespace App\Mail;
 
 use App\Models\Reply;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue; 
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class TicketReply extends Mailable
+class TicketReply extends Mailable implements ShouldQueue 
 {
     use Queueable, SerializesModels;
 
@@ -29,7 +30,7 @@ class TicketReply extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New reply for your ticket',
+            subject: 'New reply for your ticket: ' . $this->reply->ticket->ref,
         );
     }
 
