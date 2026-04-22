@@ -55,4 +55,14 @@ class TicketController extends Controller
 
         return redirect()->back()->with('error', 'Ticket not found');
     }
+
+    // Index Page
+    public function index(Request $request)
+    {
+        $tickets = Ticket::paginate($request->query('per_page', 10));
+
+        return view('tickets.index', [
+            'tickets' => $tickets,
+        ]);
+    }
 }
