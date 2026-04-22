@@ -27,3 +27,6 @@ Route::get('/tickets/{id}', [TicketController::class, 'show'])->name('tickets.sh
 
 // Reply Routes
 Route::post('/tickets/{ticket}/replies', [ReplyController::class, 'store'])->name('replies.store');
+
+// Agent Routes
+Route::get('/agent/tickets', [TicketController::class, 'index'])->name('agent.tickets.index');
