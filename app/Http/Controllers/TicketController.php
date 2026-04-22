@@ -12,28 +12,29 @@ class TicketController extends Controller
     // Store Ticket (Updated)
     public function store(Request $request)
     {
-        $request->validate([
-            'customer_name' => 'required|max:200',
-            'email' => 'required|email',
-            'description' => 'required'
-        ]);
+    $request->validate([
+        'customer_name' => 'required|max:200',
+        'email' => 'required|email',
+        'description' => 'required'
+    ]);
 
-        Mail::to($ticket->email)->queue(new TicketCreated($ticket));
-        $ticket = new Ticket();
+    // Create Ticket
+    $ticket = new Ticket();
+    $ticket->customer_name = $request->customer_name;
+    $ticket->email = $request->email;
+    $ticket->phone = $request->phone;
+    $ticket->description = $request->description;
+    $ticket->ref = 'TCK-' . strtoupper(substr(sha1(time()), 0, 10));
+    $ticket->status = 0;
+    $ticket->save();
 
-        $ticket->customer_name = $request->customer_name;
-        $ticket->email = $request->email;
-        $ticket->phone = $request->phone;
-        $ticket->description = $request->description;
-        $ticket->ref = 'TCK-' . strtoupper(substr(sha1(time()), 0, 10)); // improved ref
-        $ticket->status = 0;
+    // Send Email AFTER saving
+    Mail::to($ticket->email)->queue(new TicketCreated($ticket));
 
-        $ticket->save();
-
-        return redirect()
-            ->route('tickets.show', $ticket->id)
-            ->with('success', 'Ticket created successfully. Reference: ' . $ticket->ref);
-    }
+    return redirect()
+        ->route('tickets.show', $ticket->id)
+        ->with('success', 'Ticket created successfully. Reference: ' . $ticket->ref);
+}
 
     // Show Ticket
     public function show($id)
