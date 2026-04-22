@@ -2,79 +2,98 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2>Support Agent Dashboard</h2>
 
-    <!-- Search & Sort Form -->
-    <div class="my-4">
-        <form action="" method="get">
-            <div class="row">
-                <div class="col-3">
-                    <select class="form-control" name="sort">
-                        <option value="customer_name" {{ request('sort', 'created_at') == 'customer_name' ? 'selected' : null }}>Customer Name</option>
-                        <option value="created_at" {{ request('sort', 'created_at') == 'created_at' ? 'selected' : null }}>Opened Time</option>
-                        <option value="updated_at" {{ request('sort', 'created_at') == 'updated_at' ? 'selected' : null }}>Last Updated Time</option>
-                        <option value="status" {{ request('sort', 'created_at') == 'status' ? 'selected' : null }}>Status</option>
+    <h2 class="text-center mb-4">Support Agent Dashboard</h2>
+
+    <!-- Search & Sort -->
+    <div class="mb-4">
+        <form action="{{ route('agent.tickets.index') }}" method="get">
+            <div class="row align-items-center g-2">
+
+                <div class="col-md-3">
+                    <select class="form-select" name="sort">
+                        <option value="customer_name" {{ request('sort', 'created_at') == 'customer_name' ? 'selected' : '' }}>Customer Name</option>
+                        <option value="created_at" {{ request('sort', 'created_at') == 'created_at' ? 'selected' : '' }}>Opened Time</option>
+                        <option value="updated_at" {{ request('sort', 'created_at') == 'updated_at' ? 'selected' : '' }}>Last Updated</option>
+                        <option value="status" {{ request('sort', 'created_at') == 'status' ? 'selected' : '' }}>Status</option>
                     </select>
                 </div>
-                <div class="col-3">
-                    <select class="form-control" name="sort_dir">
-                        <option value="asc" {{ request('sort_dir', 'desc') == 'asc' ? 'selected' : null }}>Ascending</option>
-                        <option value="desc" {{ request('sort_dir', 'desc') == 'desc' ? 'selected' : null }}>Descending</option>
+
+                <div class="col-md-3">
+                    <select class="form-select" name="sort_dir">
+                        <option value="asc" {{ request('sort_dir', 'desc') == 'asc' ? 'selected' : '' }}>Ascending</option>
+                        <option value="desc" {{ request('sort_dir', 'desc') == 'desc' ? 'selected' : '' }}>Descending</option>
                     </select>
                 </div>
-                <div class="col-4">
-                    <input type="text" name="q" value="{{ request('q') }}" class="form-control" placeholder="Reference, customer name or phone number">
+
+                <div class="col-md-4">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        value="{{ request('q') }}" 
+                        class="form-control" 
+                        placeholder="Reference, customer name or phone number">
                 </div>
-                <div class="col-2">
-                    <button type="submit" class="btn btn-primary w-100">Search</button>
+
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </div>
+
             </div>
         </form>
     </div>
 
-    <table class="table table-bordered mt-3">
-        <thead>
-            <tr>
-                <th>Customer</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Handled By</th>
-                <th>Status</th>
-                <th>Created Time</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($tickets as $ticket)
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Handled By</th>
+                    <th>Status</th>
+                    <th>Created Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach($tickets as $ticket)
                 <tr>
                     <td>{{ $ticket->customer_name }}</td>
                     <td>{{ $ticket->email }}</td>
                     <td>{{ $ticket->phone }}</td>
 
-                    <td>
+                    <td class="text-nowrap">
                         {{ $ticket->user ? $ticket->user->name : 'Not Assigned' }}
                     </td>
 
                     <td>
                         @if($ticket->status == 0)
-                            <span class="badge bg-success">Open</span>
+                            <span class="badge bg-success px-3 py-2">Open</span>
                         @else
-                            <span class="badge bg-secondary">Closed</span>
+                            <span class="badge bg-secondary px-3 py-2">Closed</span>
                         @endif
                     </td>
 
                     <td>{{ $ticket->created_at->diffForHumans() }}</td>
 
                     <td>
-                        <a href="{{ route('tickets.show', $ticket->id) }}" class="btn btn-sm btn-primary">
+                        <a href="{{ route('tickets.show', $ticket->id) }}" class="btn btn-sm btn-primary px-3">
                             View
                         </a>
                     </td>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 
-    {{ $tickets->links() }}
+    <!-- Pagination -->
+    <div class="mt-3 d-flex justify-content-center">
+        {{ $tickets->appends(request()->query())->links() }}
+    </div>
+
 </div>
 @endsection
