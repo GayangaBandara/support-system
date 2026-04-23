@@ -61,3 +61,6 @@ Route::middleware('auth')->prefix('agent')->group(function () {
         ->name('agent.tickets.status');
 
 });
+
+// Comment Routes
+Route::resource('comments', CommentController::class)->only('store');
