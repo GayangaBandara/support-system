@@ -24,4 +24,10 @@ class Ticket extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    // Ticket has many comments
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
