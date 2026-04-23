@@ -41,33 +41,48 @@
     </div>
 </div>
 
+<!-- ✅ NEW COMMENTS SECTION (Below Ticket Details) -->
 <div class="card mb-4">
     <div class="card-header">
         <h5 class="mb-0">Replies</h5>
     </div>
+
     <div class="card-body">
-        @forelse($ticket->replies as $reply)
+
+        <!-- Show comments -->
+        @forelse($ticket->comments as $comment)
             <div class="border-bottom pb-3 mb-3">
-                <strong class="d-block">{{ $reply->user->name ?? 'Agent' }}</strong>
-                <small class="text-muted d-block">{{ $reply->created_at->format('M d, Y H:i') }}</small>
-                <p class="mt-2 mb-0">{{ $reply->message }}</p>
+                <strong class="d-block">
+                    {{ $comment->user ? $comment->user->name : 'Customer' }}
+                </strong>
+
+                <small class="text-muted d-block">
+                    {{ $comment->created_at->diffForHumans() }}
+                </small>
+
+                <p class="mt-2 mb-0">{{ $comment->content }}</p>
             </div>
         @empty
             <p class="text-muted">No replies yet.</p>
         @endforelse
+
     </div>
 </div>
 
+<!-- ✅ ADD REPLY -->
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">Add Reply</h5>
     </div>
+
     <div class="card-body">
-        <form action="{{ route('replies.store', $ticket->id) }}" method="post">
+        <form method="POST" action="{{ route('replies.store', $ticket->id) }}">
             @csrf
+
             <div class="mb-3">
-                <textarea name="message" class="form-control" rows="4" placeholder="Write your reply..." required></textarea>
+                <textarea name="content" class="form-control" rows="4" placeholder="Write your reply..." required></textarea>
             </div>
+
             <div class="text-end">
                 <button type="submit" class="btn btn-success">Send Reply</button>
             </div>
