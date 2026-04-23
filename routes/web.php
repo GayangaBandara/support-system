@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TicketController;
-use App\Http\Controllers\ReplyController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LoginController;
 
 /*
@@ -39,12 +39,11 @@ Route::get('/tickets/{id}', [TicketController::class, 'show'])->name('tickets.sh
 
 /*
 |--------------------------------------------------------------------------
-| Reply Routes
+| Comments Routes
 |--------------------------------------------------------------------------
 */
 
-Route::post('/tickets/{ticket}/replies', [ReplyController::class, 'store'])
-    ->name('replies.store');
+Route::resource('comments', CommentController::class)->only('store');
 
 /*
 |--------------------------------------------------------------------------

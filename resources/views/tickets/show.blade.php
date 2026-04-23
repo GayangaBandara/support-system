@@ -41,7 +41,7 @@
     </div>
 </div>
 
-<!-- ✅ NEW COMMENTS SECTION (Below Ticket Details) -->
+<!-- NEW COMMENTS SECTION (Below Ticket Details) -->
 <div class="card mb-4">
     <div class="card-header">
         <h5 class="mb-0">Replies</h5>
@@ -49,13 +49,12 @@
 
     <div class="card-body">
 
-        <!-- Show comments -->
+        <!-- Show replies -->
         @forelse($ticket->comments as $comment)
             <div class="border-bottom pb-3 mb-3">
                 <strong class="d-block">
                     {{ $comment->user ? $comment->user->name : 'Customer' }}
                 </strong>
-
                 <small class="text-muted d-block">
                     {{ $comment->created_at->diffForHumans() }}
                 </small>
@@ -69,15 +68,17 @@
     </div>
 </div>
 
-<!-- ✅ ADD REPLY -->
+
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">Add Reply</h5>
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route('replies.store', $ticket->id) }}">
+        <form method="POST" action="{{ route('comments.store') }}">
             @csrf
+
+            <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
 
             <div class="mb-3">
                 <textarea name="content" class="form-control" rows="4" placeholder="Write your reply..." required></textarea>
