@@ -9,6 +9,12 @@ use App\Mail\TicketCreated;
 
 class TicketController extends Controller
 {
+    // Create Ticket
+    public function create()
+    {
+        return view('tickets.create');
+    }
+
     // Store Ticket (Updated)
     public function store(Request $request)
     {
