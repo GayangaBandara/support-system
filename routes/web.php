@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ReplyController;
+use App\Http\Controllers\LoginController;
 
 // Home Page (NEW)
 Route::get('/', function () {
@@ -30,3 +31,8 @@ Route::post('/tickets/{ticket}/replies', [ReplyController::class, 'store'])->nam
 
 // Agent Routes
 Route::get('/agent/tickets', [TicketController::class, 'index'])->name('agent.tickets.index');
+
+// Authentication Routes
+Route::get('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/login', [LoginController::class, 'authenticate'])->name('authenticate');
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
