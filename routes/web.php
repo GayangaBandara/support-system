@@ -5,34 +5,59 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\LoginController;
 
-// Home Page (NEW)
-Route::get('/', function () {
-    return view('home'); // 
-});
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 
-// Keep welcome page (optional)
-Route::get('/welcome', function () {
-    return view('welcome');
-});
+Route::get('/', fn() => view('home'))->name('home');
+Route::get('/welcome', fn() => view('welcome'));
 
-// Ticket Routes
-Route::get('/tickets/create', function () {
-    return view('tickets.create');
-})->name('tickets.create');
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+*/
 
-Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
-
-Route::get('/tickets/search', [TicketController::class, 'search'])->name('tickets.search');
-
-Route::get('/tickets/{id}', [TicketController::class, 'show'])->name('tickets.show');
-
-// Reply Routes
-Route::post('/tickets/{ticket}/replies', [ReplyController::class, 'store'])->name('replies.store');
-
-// Agent Routes
-Route::get('/agent/tickets', [TicketController::class, 'index'])->name('agent.tickets.index');
-
-// Authentication Routes
 Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('authenticate');
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Logout MUST be POST (security best practice)
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+/*
+|--------------------------------------------------------------------------
+| Ticket (Customer)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
+Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+Route::get('/tickets/search', [TicketController::class, 'search'])->name('tickets.search');
+Route::get('/tickets/{id}', [TicketController::class, 'show'])->name('tickets.show');
+
+/*
+|--------------------------------------------------------------------------
+| Reply Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/tickets/{ticket}/replies', [ReplyController::class, 'store'])
+    ->name('replies.store');
+
+/*
+|--------------------------------------------------------------------------
+| Agent Routes (Protected)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->prefix('agent')->group(function () {
+    
+    Route::get('/tickets', [TicketController::class, 'index'])
+        ->name('agent.tickets.index');
+
+    Route::patch('/tickets/{id}/status', [TicketController::class, 'updateStatus'])
+        ->name('agent.tickets.status');
+
+});
