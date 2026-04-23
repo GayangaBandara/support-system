@@ -21,7 +21,7 @@ class ReplyController extends Controller
             'message' => $request->message
         ]);
 
-        Mail::to($reply->ticket->email)->queue(new TicketReply($reply));
+        Mail::to($reply->ticket->email)->send(new TicketReply($reply));
         return back()->with('success', 'Reply added');
     }
 }
