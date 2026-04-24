@@ -90,7 +90,7 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route('comments.store') }}">
+        <form action="{{ route('comments.store') }}" method="POST">
             @csrf
 
             <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
@@ -99,15 +99,17 @@
                 <textarea 
                     name="content" 
                     class="form-control" 
-                    rows="4" 
-                    placeholder="Write your reply..." 
+                    rows="3" 
+                    placeholder="Enter your reply"
                     required
-                ></textarea>
+                >{{ old('content') }}</textarea>
+
+                @error('content')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
             </div>
 
-            <div class="text-end">
-                <button type="submit" class="btn btn-success">Send Reply</button>
-            </div>
+            <button type="submit" class="btn btn-success mt-2">Add Reply</button>
         </form>
     </div>
 </div>
