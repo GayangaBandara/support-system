@@ -46,4 +46,12 @@ class TicketCreated extends Mailable implements ShouldQueue
             ]
         );
     }
+
+    /**
+     * Get the attachments for the message.
+     */
+    public function attachments(): array
+    {
+        return [];
+    }
 }

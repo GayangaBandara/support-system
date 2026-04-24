@@ -35,7 +35,7 @@ class TicketController extends Controller
     $ticket->save();
 
     // Send Email AFTER saving
-    Mail::to($ticket->email)->queue(new TicketCreated($ticket));
+    Mail::to($ticket->email)->send(new TicketCreated($ticket));
 
     return redirect()
         ->route('tickets.show', $ticket->id)
