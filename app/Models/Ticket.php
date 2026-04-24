@@ -15,21 +15,37 @@ class Ticket extends Model
         'status'
     ];
 
+    // Eager load comments + user (avoids N+1 problem)
     protected $with = ['comments', 'comments.user'];
 
-    public function replies()
+    /**
+     * Ticket has many comments (replies)
+     */
+    public function comments()
     {
-        return $this->hasMany(Reply::class);
+        return $this->hasMany(Comment::class);
     }
 
+    /**
+     * (Optional) If ticket belongs to a user
+     * Only keep if you have user_id column in tickets table
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    
-    // Ticket has many comments
-    public function comments()
+
+    /**
+     * Accessor: Get last agent who commented
+     */
+    public function getLastCommentedAgentAttribute()
     {
-        return $this->hasMany(Comment::class);
+        return $this->comments
+            ->sortByDesc('created_at')
+            ->filter(function ($comment) {
+                return $comment->user && $comment->user->role === 'agent';
+            })
+            ->pluck('user')
+            ->first();
     }
 }
