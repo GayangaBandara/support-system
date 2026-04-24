@@ -4,6 +4,7 @@
 
 <h2 class="text-center mb-4">Support Ticket</h2>
 
+<!-- Ticket Details -->
 <div class="card mb-4">
     <div class="card-body">
         <table class="table table-sm">
@@ -41,7 +42,7 @@
     </div>
 </div>
 
-<!-- NEW COMMENTS SECTION (Below Ticket Details) -->
+<!-- Replies Section -->
 <div class="card mb-4">
     <div class="card-header">
         <h5 class="mb-0">Replies</h5>
@@ -49,26 +50,40 @@
 
     <div class="card-body">
 
-        <!-- Show replies -->
-        @forelse($ticket->comments as $comment)
-            <div class="border-bottom pb-3 mb-3">
-                <strong class="d-block">
-                    {{ $comment->user ? $comment->user->name : 'Customer' }}
-                </strong>
-                <small class="text-muted d-block">
-                    {{ $comment->created_at->diffForHumans() }}
-                </small>
+        @if($ticket->comments->isNotEmpty())
 
-                <p class="mt-2 mb-0">{{ $comment->content }}</p>
-            </div>
-        @empty
+            @foreach($ticket->comments as $comment)
+                <div class="border-bottom pb-3 mb-3 {{ $comment->user ? 'bg-light p-2 rounded' : '' }}">
+
+                    <div class="text-muted small">
+                        <strong>
+                            @if($comment->user)
+                                {{ $comment->user->name }}
+                                <span class="badge bg-primary">Agent</span>
+                            @else
+                                {{ $ticket->customer_name }}
+                                <span class="badge bg-secondary">Customer</span>
+                            @endif
+                        </strong>
+
+                        <span class="ms-2">
+                            {{ $comment->created_at->format('d M Y h:i A') }}
+                        </span>
+                    </div>
+
+                    <p class="mt-2 mb-0">{{ $comment->content }}</p>
+
+                </div>
+            @endforeach
+
+        @else
             <p class="text-muted">No replies yet.</p>
-        @endforelse
+        @endif
 
     </div>
 </div>
 
-
+<!-- Add Reply -->
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">Add Reply</h5>
@@ -81,7 +96,13 @@
             <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
 
             <div class="mb-3">
-                <textarea name="content" class="form-control" rows="4" placeholder="Write your reply..." required></textarea>
+                <textarea 
+                    name="content" 
+                    class="form-control" 
+                    rows="4" 
+                    placeholder="Write your reply..." 
+                    required
+                ></textarea>
             </div>
 
             <div class="text-end">
@@ -91,6 +112,7 @@
     </div>
 </div>
 
+<!-- Back Button -->
 <div class="mt-3">
     <a href="/" class="btn btn-outline-secondary">Back</a>
 </div>

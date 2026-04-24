@@ -9,18 +9,21 @@ class CommentController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
+        // Validate
+        $validated = $request->validate([
             'content' => 'required',
             'ticket_id' => 'required|exists:tickets,id',
         ]);
 
-        $data = $request->only(['content', 'ticket_id']);
-        $data['user_id'] = auth()->check() ? auth()->id() : null;
+        // Attach user (null if guest)
+        $validated['user_id'] = auth()->id();
 
-        Comment::create($data);
+        // Create comment
+        Comment::create($validated);
 
+        // Redirect
         return redirect()
-            ->route('tickets.show', $data['ticket_id'])
+            ->route('tickets.show', $validated['ticket_id'])
             ->with('success', 'Reply added successfully');
     }
 }
