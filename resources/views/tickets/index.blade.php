@@ -14,8 +14,8 @@
                     <select class="form-select" name="sort">
                         <option value="customer_name" {{ request('sort', 'created_at') == 'customer_name' ? 'selected' : '' }}>Customer Name</option>
                         <option value="created_at" {{ request('sort', 'created_at') == 'created_at' ? 'selected' : '' }}>Opened Time</option>
-                        <option value="updated_at" {{ request('sort', 'created_at') == 'updated_at' ? 'selected' : '' }}>Last Updated</option>
-                        <option value="status" {{ request('sort', 'created_at') == 'status' ? 'selected' : '' }}>Status</option>
+                        <option value="updated_at" {{ request('sort') == 'updated_at' ? 'selected' : '' }}>Last Updated</option>
+                        <option value="status" {{ request('sort') == 'status' ? 'selected' : '' }}>Status</option>
                     </select>
                 </div>
 
@@ -59,14 +59,20 @@
             </thead>
 
             <tbody>
-                @foreach($tickets as $ticket)
+                @forelse($tickets as $ticket)
                 <tr>
                     <td>{{ $ticket->customer_name }}</td>
                     <td>{{ $ticket->email }}</td>
-                    <td>{{ $ticket->phone }}</td>
+                    <td>{{ $ticket->phone ?? 'N/A' }}</td>
 
+                    <!--  UPDATED HANDLED BY -->
                     <td class="text-nowrap">
-                        {{ $ticket->user ? $ticket->user->name : 'Not Assigned' }}
+                        @if($ticket->lastCommentedAgent)
+                            {{ $ticket->lastCommentedAgent->name }}
+                            <span class="badge bg-primary">Agent</span>
+                        @else
+                            <span class="text-muted">None</span>
+                        @endif
                     </td>
 
                     <td>
@@ -85,7 +91,11 @@
                         </a>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="7" class="text-muted">No tickets found</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
