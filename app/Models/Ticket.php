@@ -15,6 +15,8 @@ class Ticket extends Model
         'status'
     ];
 
+    protected $with = ['comments', 'comments.user'];
+
     public function replies()
     {
         return $this->hasMany(Reply::class);
