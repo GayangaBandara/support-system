@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Ticket;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\TicketCreatedNotification;
-
+use App\Events\TicketCreated;
 class TicketController extends Controller
 {
     // Create Ticket
