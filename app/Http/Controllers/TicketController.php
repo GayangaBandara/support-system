@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ticket;
-use Mail;
-use App\Mail\TicketCreated;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\TicketCreatedNotification;
 
 class TicketController extends Controller
 {
@@ -34,8 +34,9 @@ class TicketController extends Controller
     $ticket->status = 0;
     $ticket->save();
 
-    // Send Email AFTER saving
-    Mail::to($ticket->email)->send(new TicketCreated($ticket));
+    // Send queued notification
+    Notification::route('mail', $ticket->email)
+        ->notify(new TicketCreatedNotification($ticket));
 
     return redirect()
         ->route('tickets.show', $ticket->id)
