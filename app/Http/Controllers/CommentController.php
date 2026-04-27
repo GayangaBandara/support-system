@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Comment;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\TicketReplyNotification;
 
 class CommentController extends Controller
 {
@@ -19,7 +21,14 @@ class CommentController extends Controller
         $validated['user_id'] = auth()->id();
 
         // Create comment
-        Comment::create($validated);
+        $comment = Comment::create($validated);
+
+        // Get the ticket
+        $ticket = $comment->ticket;
+
+        // Send notification to customer
+        Notification::route('mail', $ticket->email)
+            ->notify(new TicketReplyNotification($comment));
 
         // Redirect
         return redirect()
